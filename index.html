@@ -1,0 +1,3507 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#FAF7F5" />
+  <title>LUNA — Saúde Feminina</title>
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & VARIÁVEIS DE TEMA (ROSA PASTEL, LAVANDA, CREME)
+       ========================================================================== */
+    :root {
+      --bg-app: #FAF7F5;
+      --bg-desktop: #EFEAE6;
+      --surface: #FFFFFF;
+      --surface-soft: #FDF9F8;
+      --surface-lavender: #F4F0FA;
+      --surface-rose: #FDF0F2;
+
+      --primary: #E88D9B;
+      --primary-dark: #D46F7F;
+      --primary-light: #F4C2C2;
+      --primary-alpha: rgba(232, 141, 155, 0.16);
+
+      --secondary: #9B85C4;
+      --secondary-light: #D8CEEB;
+      --secondary-alpha: rgba(155, 133, 196, 0.18);
+
+      --accent-warm: #E5A98C;
+      --success: #6BA88E;
+      --success-bg: #ECF6F1;
+      --warning: #D99B52;
+      --warning-bg: #FDF5EA;
+      --danger: #D66874;
+      --danger-bg: #FCEEEF;
+
+      --text-main: #2E262B;
+      --text-secondary: #6E6268;
+      --text-muted: #9B8F95;
+      --border-soft: rgba(46, 38, 43, 0.08);
+
+      --gradient-hero: linear-gradient(135deg, #F9DCE0 0%, #ECE4F6 100%);
+      --gradient-primary: linear-gradient(135deg, #E88D9B 0%, #B89AD8 100%);
+
+      --shadow-xs: 0 2px 8px rgba(64, 42, 52, 0.04);
+      --shadow-sm: 0 6px 20px rgba(64, 42, 52, 0.06);
+      --shadow-md: 0 12px 32px rgba(64, 42, 52, 0.10);
+      --shadow-nav: 0 -4px 24px rgba(64, 42, 52, 0.06);
+
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+
+      --nav-height: 74px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Temas alternativos configuráveis no Perfil */
+    [data-theme="lavender"] {
+      --primary: #9B85C4;
+      --primary-dark: #7E66AD;
+      --primary-light: #D8CEEB;
+      --primary-alpha: rgba(155, 133, 196, 0.18);
+      --gradient-hero: linear-gradient(135deg, #E8E0F5 0%, #F7DFE4 100%);
+      --gradient-primary: linear-gradient(135deg, #9B85C4 0%, #E88D9B 100%);
+    }
+
+    [data-theme="peach"] {
+      --primary: #E0927B;
+      --primary-dark: #C8765E;
+      --primary-light: #F5CBBF;
+      --primary-alpha: rgba(224, 146, 123, 0.18);
+      --gradient-hero: linear-gradient(135deg, #FAE3DA 0%, #F3E5F5 100%);
+      --gradient-primary: linear-gradient(135deg, #E0927B 0%, #B89AD8 100%);
+    }
+
+    /* ==========================================================================
+       2. RESET & SHELL MOBILE-FIRST (ESTILO APLICATIVO ANDROID NATIVO)
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-sans);
+      background-color: var(--bg-desktop);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      min-height: 100dvh;
+      margin: 0 auto;
+      background-color: var(--bg-app);
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    @media (min-width: 500px) {
+      body {
+        padding: 16px 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .app-shell {
+        min-height: calc(100dvh - 32px);
+        max-height: 920px;
+        border-radius: 34px;
+        box-shadow: 0 24px 60px rgba(46, 38, 43, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.7);
+        overflow: hidden;
+      }
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(250, 247, 245, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(46, 38, 43, 0.04);
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--primary-alpha);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text-main);
+    }
+
+    .brand-sub {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      display: block;
+      letter-spacing: 0.01em;
+      margin-top: -2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      transition: transform 0.18s ease, background 0.2s ease;
+    }
+
+    .pill-badge:active {
+      transform: scale(0.96);
+    }
+
+    .app-main {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 18px calc(var(--nav-height) + 28px);
+      scroll-behavior: smooth;
+    }
+
+    .app-main::-webkit-scrollbar {
+      width: 4px;
+    }
+    .app-main::-webkit-scrollbar-thumb {
+      background: rgba(155, 143, 149, 0.25);
+      border-radius: 4px;
+    }
+
+    .screen {
+      display: none;
+      animation: screenFadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes screenFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==========================================================================
+       3. COMPONENTES REUTILIZÁVEIS
+       ========================================================================== */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 14px;
+    }
+
+    .card-soft {
+      background: var(--surface-soft);
+    }
+
+    .card-lavender {
+      background: var(--surface-lavender);
+      border-color: rgba(155, 133, 196, 0.18);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      border-radius: var(--radius-full);
+      padding: 12px 18px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      text-decoration: none;
+      min-height: 44px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: #FFFFFF;
+      box-shadow: 0 6px 18px var(--primary-alpha);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .btn-soft-rose {
+      background: var(--surface-rose);
+      color: var(--primary-dark);
+    }
+
+    .btn-soft-lavender {
+      background: var(--surface-lavender);
+      color: var(--secondary);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      min-height: 36px;
+    }
+
+    /* ==========================================================================
+       4. TELA INICIAL (INÍCIO)
+       ========================================================================== */
+    .greeting-box {
+      margin-bottom: 14px;
+    }
+
+    .greeting-date {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .greeting-title {
+      font-size: 1.42rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .cycle-hero {
+      background: var(--gradient-hero);
+      border-radius: var(--radius-lg);
+      padding: 20px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cycle-ring-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cycle-ring-container {
+      position: relative;
+      width: 118px;
+      height: 118px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cycle-ring-center {
+      position: absolute;
+      inset: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6px;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .cycle-day-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .cycle-day-number {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .cycle-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .phase-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .phase-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .cycle-countdown {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .cycle-subnote {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    .hero-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .hero-actions .btn {
+      padding: 11px 12px;
+      font-size: 0.82rem;
+    }
+
+    .daily-quote-card {
+      background: var(--surface);
+      border-left: 4px solid var(--secondary);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .quote-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--surface-lavender);
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .quote-text {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .mini-stat-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-xs);
+      cursor: pointer;
+      transition: transform 0.16s ease;
+    }
+
+    .mini-stat-card:active {
+      transform: scale(0.98);
+    }
+
+    .mini-stat-label {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mini-stat-value {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .mini-stat-sub {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Checklist de Autocuidado Diário */
+    .care-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .care-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+      border: 1px solid var(--border-soft);
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .care-item.completed {
+      background: var(--success-bg);
+      border-color: rgba(107, 168, 142, 0.25);
+    }
+
+    .care-checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      border: 2px solid var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: #fff;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .care-item.completed .care-checkbox {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .care-text {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-main);
+      flex: 1;
+    }
+
+    .care-item.completed .care-text {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       5. CALENDÁRIO MENSTRUAL INTERATIVO
+       ========================================================================== */
+    .cal-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .cal-month-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      color: var(--text-main);
+    }
+
+    .cal-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .icon-btn:active {
+      background: var(--surface-rose);
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1 / 1.08;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: var(--surface-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .cal-day:active {
+      transform: scale(0.93);
+    }
+
+    .cal-day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .cal-day.today {
+      border: 2px solid var(--text-main);
+    }
+
+    .cal-day.period-actual {
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px var(--primary-alpha);
+    }
+
+    .cal-day.period-predicted {
+      background: var(--surface-rose);
+      border: 1.5px dashed var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .cal-day.fertile-window {
+      background: var(--surface-lavender);
+      color: #5D478A;
+    }
+
+    .cal-day.ovulation-day {
+      background: var(--secondary-light);
+      border: 1.5px solid var(--secondary);
+      color: #463270;
+      font-weight: 800;
+    }
+
+    .cal-dots {
+      display: flex;
+      gap: 3px;
+      margin-top: 3px;
+      height: 5px;
+    }
+
+    .cal-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--secondary);
+    }
+
+    .cal-day.period-actual .cal-dot {
+      background: #FFFFFF;
+    }
+
+    .cal-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .disclaimer-box {
+      background: var(--warning-bg);
+      border: 1px solid rgba(217, 155, 82, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 11px 13px;
+      font-size: 0.75rem;
+      color: #7D5829;
+      line-height: 1.4;
+      margin-top: 12px;
+    }
+
+    /* ==========================================================================
+       6. DIÁRIO DE SINTOMAS, HUMOR & SONO/BEM-ESTAR
+       ========================================================================== */
+    .date-selector-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--surface);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .date-input {
+      border: 1px solid var(--border-soft);
+      background: var(--surface-soft);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .chip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .chip-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .select-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 11px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-soft);
+      background: var(--surface-soft);
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      text-align: left;
+    }
+
+    .select-chip.active {
+      background: var(--surface-rose);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      box-shadow: 0 2px 8px var(--primary-alpha);
+    }
+
+    .mood-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 10px 4px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-soft);
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.16s ease;
+    }
+
+    .mood-chip.active {
+      background: var(--surface-lavender);
+      border-color: var(--secondary);
+      color: #4E3978;
+      transform: translateY(-1px);
+    }
+
+    .intensity-bar {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-soft);
+    }
+
+    .intensity-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-soft);
+      background: var(--surface-soft);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .intensity-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .field-group {
+      margin-bottom: 12px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-soft);
+      background: var(--surface-soft);
+      font-family: inherit;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .input-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #FFFFFF;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 8px;
+    }
+
+    .star-btn {
+      flex: 1;
+      padding: 9px 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-soft);
+      background: var(--surface-soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .star-btn.active {
+      background: var(--surface-lavender);
+      border-color: var(--secondary);
+      color: #4E3978;
+    }
+
+    .water-counter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #F0F7FA;
+      border: 1px solid rgba(114, 172, 198, 0.25);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+    }
+
+    .water-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .water-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: #FFFFFF;
+      color: #4B8BA8;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .log-history-item {
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+      border: 1px solid var(--border-soft);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       7. BIBLIOTECA EDUCATIVA (APRENDER)
+       ========================================================================== */
+    .search-box {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-soft);
+      background: var(--surface);
+      font-family: inherit;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .article-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 15px 16px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.2s ease;
+    }
+
+    .article-card:active {
+      transform: scale(0.98);
+    }
+
+    .article-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .article-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .article-cat {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--primary-dark);
+    }
+
+    .article-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 2px 0;
+    }
+
+    .article-excerpt {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ==========================================================================
+       8. PERFIL, CONFIGURAÇÕES & PRIVACIDADE
+       ========================================================================== */
+    .profile-banner {
+      background: var(--gradient-hero);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .avatar-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      color: #FFFFFF;
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      box-shadow: 0 8px 20px var(--primary-alpha);
+    }
+
+    .theme-swatches {
+      display: flex;
+      gap: 10px;
+    }
+
+    .theme-option {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border-soft);
+      background: var(--surface-soft);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-option.active {
+      border-color: var(--primary);
+      background: #FFFFFF;
+    }
+
+    .swatch-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #DED7DA;
+      transition: 0.25s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.25s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* ==========================================================================
+       9. NAVEGAÇÃO INFERIOR FIXA (BOTTOM BAR ANDROID)
+       ========================================================================== */
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      z-index: 40;
+      height: var(--nav-height);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-nav);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 6px 10px;
+    }
+
+    .nav-item {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .nav-item .nav-pill {
+      width: 44px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-item.active {
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    .nav-item.active .nav-pill {
+      background: var(--primary-alpha);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       10. MODAIS E TOASTS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(34, 26, 31, 0.48);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      animation: fadeBackdrop 0.2s ease;
+    }
+
+    @media (min-width: 500px) {
+      .modal-backdrop {
+        align-items: center;
+        padding: 16px;
+      }
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    @keyframes fadeBackdrop {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 460px;
+      max-height: 88dvh;
+      background: var(--surface);
+      border-radius: 26px 26px 0 0;
+      padding: 20px 20px 26px;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: slideUpSheet 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (min-width: 500px) {
+      .modal-sheet {
+        border-radius: 26px;
+      }
+    }
+
+    @keyframes slideUpSheet {
+      from { transform: translateY(30px); opacity: 0.7; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .modal-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .article-body p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .article-body h4 {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      margin: 14px 0 6px;
+    }
+
+    .article-body ul {
+      padding-left: 18px;
+      margin-bottom: 12px;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    .article-body li {
+      margin-bottom: 6px;
+    }
+
+    /* Gráficos SVG responsivos */
+    .chart-box {
+      background: var(--surface-soft);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      border: 1px solid var(--border-soft);
+      margin-bottom: 14px;
+    }
+
+    .progress-row {
+      margin-bottom: 10px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: #ECE6E9;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 99px;
+    }
+
+    /* Premium comparison */
+    .plan-card {
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border: 1.5px solid var(--border-soft);
+      margin-bottom: 12px;
+    }
+
+    .plan-card.premium {
+      background: var(--gradient-hero);
+      border-color: var(--primary);
+    }
+
+    .plan-list {
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    .plan-list li {
+      font-size: 0.82rem;
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #2E262B;
+      color: #FFFFFF;
+      padding: 11px 18px;
+      border-radius: var(--radius-full);
+      font-size: 0.83rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <!-- CABEÇALHO DO APLICATIVO -->
+    <header class="app-header">
+      <div class="brand-mark">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-title">LUNA</span>
+          <span class="brand-sub">Seu corpo, seu ciclo, seu cuidado.</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="pill-badge" id="btnOpenReportsHeader" title="Relatórios e Histórico">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          Relatórios
+        </button>
+      </div>
+    </header>
+
+    <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
+    <main class="app-main" id="appMain">
+      <!-- ==================================================================
+           ABA 1: INÍCIO
+           ================================================================== -->
+      <section class="screen active" id="screen-home" aria-label="Tela Inicial">
+        <div class="greeting-box">
+          <div class="greeting-date" id="homeCurrentDate">--</div>
+          <h1 class="greeting-title" id="homeGreeting">Olá, Bem-vinda</h1>
+        </div>
+
+        <!-- Card Principal do Ciclo -->
+        <div class="cycle-hero">
+          <div class="cycle-ring-wrapper">
+            <div class="cycle-ring-container">
+              <svg width="118" height="118" viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="10"/>
+                <circle id="cycleProgressArc" cx="60" cy="60" r="50" fill="none" stroke="var(--primary)" stroke-width="10"
+                        stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="220"
+                        transform="rotate(-90 60 60)" style="transition: stroke-dashoffset 0.6s ease;"/>
+              </svg>
+              <div class="cycle-ring-center">
+                <span class="cycle-day-label">Ciclo</span>
+                <span class="cycle-day-number" id="heroCycleDay">--</span>
+              </div>
+            </div>
+
+            <div class="cycle-info">
+              <div class="phase-pill">
+                <span class="phase-dot" id="heroPhaseDot"></span>
+                <span id="heroPhaseName">Sem registros</span>
+              </div>
+              <div class="cycle-countdown" id="heroCountdown">Registre sua menstruação</div>
+              <p class="cycle-subnote" id="heroSubnote">Adicione as datas no calendário para acompanhar suas estimativas.</p>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary" id="btnQuickPeriod">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+              </svg>
+              Registrar menstruação
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnQuickSymptoms">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+              </svg>
+              Registrar sintomas
+            </button>
+          </div>
+        </div>
+
+        <!-- Mensagem Suave Rotativa -->
+        <div class="daily-quote-card">
+          <div class="quote-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:0.74rem;font-weight:700;color:var(--secondary);margin-bottom:2px;">Cuidado de hoje</div>
+            <p class="quote-text" id="dailyCareMessage">Escute os sinais do seu corpo com gentileza.</p>
+          </div>
+        </div>
+
+        <!-- Resumo Dinâmico de Humor & Sono -->
+        <div class="summary-grid">
+          <div class="mini-stat-card" id="cardHomeMood">
+            <div class="mini-stat-label">
+              <span>Humor de hoje</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+              </svg>
+            </div>
+            <div class="mini-stat-value" id="homeMoodValue">Não registrado</div>
+            <div class="mini-stat-sub" id="homeMoodSub">Toque para registrar</div>
+          </div>
+
+          <div class="mini-stat-card" id="cardHomeSleep">
+            <div class="mini-stat-label">
+              <span>Sono & Hidratação</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </div>
+            <div class="mini-stat-value" id="homeSleepValue">-- h de sono</div>
+            <div class="mini-stat-sub" id="homeWaterSub">0 copos de água</div>
+          </div>
+        </div>
+
+        <!-- Autocuidado Diário Interativo -->
+        <div class="card">
+          <div class="section-header">
+            <h2 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              Autocuidado diário
+            </h2>
+            <span style="font-size:0.76rem;font-weight:700;color:var(--primary-dark);" id="careProgressText">0/4</span>
+          </div>
+          <div class="care-list" id="dailyCareChecklist"></div>
+        </div>
+
+        <!-- Cards de Acesso Rápido -->
+        <div class="summary-grid">
+          <button type="button" class="mini-stat-card" style="text-align:left;" id="btnHomeOpenReports">
+            <div class="mini-stat-label" style="color:var(--secondary);">Análises</div>
+            <div class="mini-stat-value" style="font-size:0.9rem;">Histórico & Gráficos</div>
+            <div class="mini-stat-sub">Padrões do seu ciclo</div>
+          </button>
+          <button type="button" class="mini-stat-card" style="text-align:left;background:var(--surface-lavender);" id="btnHomeOpenPremium">
+            <div class="mini-stat-label" style="color:var(--secondary);">LUNA+</div>
+            <div class="mini-stat-value" style="font-size:0.9rem;">Conhecer Premium</div>
+            <div class="mini-stat-sub">Recursos exclusivos</div>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           ABA 2: CALENDÁRIO MENSTRUAL
+           ================================================================== -->
+      <section class="screen" id="screen-calendar" aria-label="Calendário Menstrual">
+        <div class="card">
+          <div class="cal-controls">
+            <div class="cal-month-title" id="calMonthTitle">Novembro 2026</div>
+            <div class="cal-nav-group">
+              <button type="button" class="btn btn-sm btn-secondary" id="btnCalToday">Hoje</button>
+              <button type="button" class="icon-btn" id="btnCalPrev" aria-label="Mês anterior">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button type="button" class="icon-btn" id="btnCalNext" aria-label="Próximo mês">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="cal-weekdays">
+            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+          </div>
+          <div class="cal-grid" id="calendarGrid"></div>
+
+          <div class="cal-legend">
+            <div class="legend-item">
+              <span class="legend-swatch" style="background:var(--primary);"></span>
+              <span>Menstruação</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-swatch" style="background:var(--surface-rose);border:1.5px dashed var(--primary);"></span>
+              <span>Previsão</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-swatch" style="background:var(--surface-lavender);"></span>
+              <span>Janela fértil est.</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-swatch" style="background:var(--secondary-light);border:1.5px solid var(--secondary);"></span>
+              <span>Ovulação est.</span>
+            </div>
+          </div>
+
+          <div class="disclaimer-box">
+            <strong>Aviso importante:</strong> As estimativas de próxima menstruação, janela fértil e ovulação são cálculos estatísticos baseados nos seus registros e podem variar em ciclos irregulares. <strong>Não utilize estas estimativas como método contraceptivo.</strong>
+          </div>
+        </div>
+
+        <div class="card card-soft">
+          <div class="section-header" style="margin-bottom:6px;">
+            <h3 class="section-title" style="font-size:0.92rem;">Resumo do Calendário</h3>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.45;" id="calStatsSummary">
+            Toque em qualquer dia no calendário para registrar o início, o fim ou os dias da sua menstruação.
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           ABA 3: DIÁRIO (SINTOMAS, HUMOR & SONO/BEM-ESTAR)
+           ================================================================== -->
+      <section class="screen" id="screen-diary" aria-label="Diário de Sintomas, Humor e Bem-estar">
+        <div class="date-selector-bar">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span style="font-size:0.84rem;font-weight:700;">Data do registro</span>
+          </div>
+          <input type="date" class="date-input" id="diaryDateInput" />
+        </div>
+
+        <!-- Humor -->
+        <div class="card">
+          <div class="section-header">
+            <h2 class="section-title">Como você está se sentindo?</h2>
+          </div>
+          <div class="chip-grid-4" id="moodGrid"></div>
+        </div>
+
+        <!-- Sintomas -->
+        <div class="card">
+          <div class="section-header">
+            <h2 class="section-title">Sintomas físicos</h2>
+            <span style="font-size:0.74rem;color:var(--text-muted);" id="selectedSymptomsCount">0 selecionados</span>
+          </div>
+          <div class="chip-grid" id="symptomsGrid"></div>
+
+          <div class="intensity-bar" id="intensityContainer" style="display:none;">
+            <button type="button" class="intensity-btn active" data-intensity="Leve">Leve</button>
+            <button type="button" class="intensity-btn" data-intensity="Moderada">Moderada</button>
+            <button type="button" class="intensity-btn" data-intensity="Intensa">Intensa</button>
+          </div>
+        </div>
+
+        <!-- Sono & Bem-estar -->
+        <div class="card">
+          <div class="section-header">
+            <h2 class="section-title">Sono e Bem-estar</h2>
+            <span style="font-size:0.78rem;font-weight:700;color:var(--secondary);" id="sleepDurationBadge">-- h</span>
+          </div>
+
+          <div class="form-row-2">
+            <div>
+              <label class="field-label" for="sleepStartInput">Dormiu às</label>
+              <input type="time" class="input-control" id="sleepStartInput" value="23:00" />
+            </div>
+            <div>
+              <label class="field-label" for="sleepEndInput">Acordou às</label>
+              <input type="time" class="input-control" id="sleepEndInput" value="07:00" />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Qualidade do sono (1 a 5)</label>
+            <div class="star-rating" id="sleepQualityGrid">
+              <button type="button" class="star-btn" data-quality="1">1 ★</button>
+              <button type="button" class="star-btn" data-quality="2">2 ★</button>
+              <button type="button" class="star-btn active" data-quality="3">3 ★</button>
+              <button type="button" class="star-btn" data-quality="4">4 ★</button>
+              <button type="button" class="star-btn" data-quality="5">5 ★</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Energia durante o dia</label>
+            <div class="star-rating" id="energyLevelGrid">
+              <button type="button" class="star-btn" data-energy="Baixa">Baixa</button>
+              <button type="button" class="star-btn active" data-energy="Média">Média</button>
+              <button type="button" class="star-btn" data-energy="Alta">Alta</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Hidratação (copos de 250ml)</label>
+            <div class="water-counter">
+              <span style="font-size:0.84rem;font-weight:600;color:#2E5D73;">
+                <strong id="waterCountDisplay">0</strong> copos (<span id="waterMlDisplay">0</span> ml)
+              </span>
+              <div class="water-controls">
+                <button type="button" class="water-btn" id="btnWaterMinus" aria-label="Diminuir copo">-</button>
+                <button type="button" class="water-btn" id="btnWaterPlus" aria-label="Adicionar copo">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Atividades e autocuidado realizados</label>
+            <div class="chip-grid" id="activitiesGrid"></div>
+          </div>
+
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label" for="diaryNotesInput">Observações pessoais</label>
+            <textarea class="input-control" id="diaryNotesInput" rows="3" placeholder="Escreva livremente sobre seu dia, sensações ou anotações..."></textarea>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" id="btnSaveDiary" style="margin-bottom:18px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Salvar registro do dia
+        </button>
+
+        <!-- Histórico Recente do Diário -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title">Registros recentes</h3>
+          </div>
+          <div id="diaryHistoryList"></div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           ABA 4: APRENDA SOBRE SEU CORPO
+           ================================================================== -->
+      <section class="screen" id="screen-learn" aria-label="Biblioteca Educativa">
+        <div class="greeting-box">
+          <h2 class="greeting-title" style="font-size:1.25rem;">Aprenda sobre seu corpo</h2>
+          <p style="font-size:0.82rem;color:var(--text-secondary);">Informação acolhedora, clara e cientificamente responsável.</p>
+        </div>
+
+        <div class="search-box">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" class="search-input" id="learnSearchInput" placeholder="Buscar tema (ex: ovulação, cólicas, TPM...)" />
+        </div>
+
+        <div class="article-grid" id="articlesList"></div>
+      </section>
+
+      <!-- ==================================================================
+           ABA 5: PERFIL E CONFIGURAÇÕES
+           ================================================================== -->
+      <section class="screen" id="screen-profile" aria-label="Perfil e Configurações">
+        <div class="profile-banner">
+          <div class="avatar-circle" id="profileAvatarInitial">L</div>
+          <h2 style="font-size:1.15rem;font-weight:700;" id="profileDisplayName">Usuária LUNA</h2>
+          <p style="font-size:0.78rem;color:var(--text-secondary);" id="profilePlanTag">Plano Gratuito • Armazenamento Local</p>
+        </div>
+
+        <!-- Configurações Pessoais e do Ciclo -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title">Configurações do Ciclo</h3>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="settingUserName">Seu nome ou apelido</label>
+            <input type="text" class="input-control" id="settingUserName" placeholder="Como gostaria de ser chamada?" />
+          </div>
+          <div class="form-row-2">
+            <div>
+              <label class="field-label" for="settingCycleLength">Duração do ciclo (dias)</label>
+              <input type="number" class="input-control" id="settingCycleLength" min="20" max="45" value="28" />
+            </div>
+            <div>
+              <label class="field-label" for="settingPeriodLength">Duração menstruação (dias)</label>
+              <input type="number" class="input-control" id="settingPeriodLength" min="2" max="10" value="5" />
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="btnSaveSettings">Salvar alterações</button>
+        </div>
+
+        <!-- Personalização Visual -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title">Personalização & Preferências</h3>
+          </div>
+          <label class="field-label">Paleta visual</label>
+          <div class="theme-swatches" style="margin-bottom:14px;">
+            <button type="button" class="theme-option active" data-theme-choice="rose">
+              <span class="swatch-dot" style="background:#E88D9B;"></span>
+              Rosa Pastel
+            </button>
+            <button type="button" class="theme-option" data-theme-choice="lavender">
+              <span class="swatch-dot" style="background:#9B85C4;"></span>
+              Lavanda
+            </button>
+            <button type="button" class="theme-option" data-theme-choice="peach">
+              <span class="swatch-dot" style="background:#E0927B;"></span>
+              Pêssego
+            </button>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div style="font-size:0.86rem;font-weight:600;">Avisos de ciclo próximo</div>
+              <div style="font-size:0.74rem;color:var(--text-muted);">Exibir lembrete visual 2 dias antes</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggleReminders" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Relatórios & LUNA Premium -->
+        <div class="card card-lavender">
+          <div class="section-header">
+            <h3 class="section-title">Recursos & Análises</h3>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button type="button" class="btn btn-secondary btn-block" id="btnProfileReports">
+              Abrir Histórico e Relatórios Completos
+            </button>
+            <button type="button" class="btn btn-primary btn-block" id="btnProfilePremium">
+              Conhecer LUNA Premium
+            </button>
+          </div>
+        </div>
+
+        <!-- Privacidade & Gestão de Dados -->
+        <div class="card">
+          <div class="section-header">
+            <h3 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              Privacidade & Seus Dados
+            </h3>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">
+            Seus registros íntimos são armazenados <strong>exclusivamente no seu dispositivo</strong> (via localStorage). O LUNA não envia dados para servidores, não utiliza inteligência artificial e não realiza rastreamento.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button type="button" class="btn btn-secondary btn-block" id="btnExportData">
+              Exportar backup dos dados (JSON)
+            </button>
+            <button type="button" class="btn btn-danger btn-block" id="btnDeleteAllData">
+              Apagar todos os meus dados
+            </button>
+          </div>
+        </div>
+
+        <p style="text-align:center;font-size:0.74rem;color:var(--text-muted);margin-top:8px;">
+          LUNA — Saúde Feminina • Versão 1.0 • Modo Privado Offline
+        </p>
+      </section>
+    </main>
+
+    <!-- NAVEGAÇÃO INFERIOR FIXA -->
+    <nav class="bottom-nav" aria-label="Navegação Principal">
+      <button type="button" class="nav-item active" data-target="home">
+        <span class="nav-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </span>
+        <span>Início</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="calendar">
+        <span class="nav-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </span>
+        <span>Calendário</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="diary">
+        <span class="nav-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+          </svg>
+        </span>
+        <span>Diário</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="learn">
+        <span class="nav-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </span>
+        <span>Aprender</span>
+      </button>
+
+      <button type="button" class="nav-item" data-target="profile">
+        <span class="nav-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </span>
+        <span>Perfil</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: DETALHES E AÇÕES DO DIA NO CALENDÁRIO
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalDayDetail" role="dialog" aria-modal="true" aria-labelledby="modalDayTitle">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalDayTitle">Detalhes do dia</h3>
+        <button type="button" class="modal-close" data-close-modal="modalDayDetail" aria-label="Fechar">×</button>
+      </div>
+      <div id="modalDayContent"></div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: LEITURA DE ARTIGO EDUCATIVO
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalArticle" role="dialog" aria-modal="true" aria-labelledby="modalArticleTitle">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div>
+          <span class="article-cat" id="modalArticleCategory">Categoria</span>
+          <h3 class="modal-title" id="modalArticleTitle">Título do Artigo</h3>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="modalArticle" aria-label="Fechar">×</button>
+      </div>
+      <div class="article-body" id="modalArticleBody"></div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: HISTÓRICO E RELATÓRIOS
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalReports" role="dialog" aria-modal="true" aria-labelledby="modalReportsTitle">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalReportsTitle">Histórico e Relatórios</h3>
+        <button type="button" class="modal-close" data-close-modal="modalReports" aria-label="Fechar">×</button>
+      </div>
+      <div id="modalReportsBody"></div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: LUNA PREMIUM
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalPremium" role="dialog" aria-modal="true" aria-labelledby="modalPremiumTitle">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalPremiumTitle">LUNA Premium</h3>
+        <button type="button" class="modal-close" data-close-modal="modalPremium" aria-label="Fechar">×</button>
+      </div>
+
+      <p style="font-size:0.84rem;color:var(--text-secondary);margin-bottom:14px;">
+        Amplie sua experiência de autoconhecimento com relatórios aprofundados e personalização completa, mantendo 100% da sua privacidade offline.
+      </p>
+
+      <div class="plan-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong style="font-size:0.96rem;">Plano Gratuito</strong>
+          <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);">Ativo</span>
+        </div>
+        <ul class="plan-list">
+          <li>✓ Calendário menstrual completo</li>
+          <li>✓ Registro de menstruação, sintomas e humor</li>
+          <li>✓ Diário de sono e hidratação</li>
+          <li>✓ Biblioteca educativa completa</li>
+          <li>✓ Histórico básico do ciclo</li>
+        </ul>
+      </div>
+
+      <div class="plan-card premium">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong style="font-size:1rem;color:var(--primary-dark);">LUNA Premium</strong>
+          <span style="padding:3px 10px;border-radius:99px;background:#fff;font-size:0.72rem;font-weight:700;color:var(--secondary);">Em breve na Play Store</span>
+        </div>
+        <ul class="plan-list">
+          <li>★ Relatórios avançados e comparação entre ciclos</li>
+          <li>★ Gráficos detalhados de sintomas e humor</li>
+          <li>★ Histórico ampliado sem limites</li>
+          <li>★ Temas visuais exclusivos e ícones personalizados</li>
+          <li>★ Exportação avançada para consultas médicas</li>
+        </ul>
+        <button type="button" class="btn btn-primary btn-block" id="btnTogglePremiumPreview" style="margin-top:12px;">
+          Ativar prévia visual gratuita
+        </button>
+      </div>
+
+      <p style="font-size:0.73rem;color:var(--text-muted);text-align:center;line-height:1.4;">
+        Nenhuma cobrança é realizada nesta versão. Interface preparada para integração futura com o sistema oficial Google Play Billing.
+      </p>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 5: CONFIRMAÇÃO DE EXCLUSÃO DE DADOS
+       ====================================================================== -->
+  <div class="modal-backdrop" id="modalConfirmDelete" role="dialog" aria-modal="true" aria-labelledby="modalDeleteTitle">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalDeleteTitle" style="color:var(--danger);">Apagar todos os dados?</h3>
+        <button type="button" class="modal-close" data-close-modal="modalConfirmDelete" aria-label="Fechar">×</button>
+      </div>
+      <p style="font-size:0.86rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.5;">
+        Esta ação removerá permanentemente todos os seus dias de menstruação, registros do diário, hábitos de sono e configurações salvas neste dispositivo. Não será possível desfazer.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button type="button" class="btn btn-secondary" data-close-modal="modalConfirmDelete">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmEraseAction">Sim, apagar tudo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST DE FEEDBACK -->
+  <div class="toast" id="toastBox" role="status" aria-live="polite"></div>
+
+  <!-- ======================================================================
+       JAVASCRIPT PURO (ARQUITETURA MODULAR E PERSISTÊNCIA LOCALSTORAGE)
+       ====================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      /* ----------------------------------------------------------------------
+         1. CONSTANTES E DADOS ESTÁTICOS (SINTOMAS, HUMORES, ARTIGOS)
+         ---------------------------------------------------------------------- */
+      const STORAGE_KEY = "luna_womens_health_v1";
+
+      const DAILY_MESSAGES = [
+        "Respeite o ritmo do seu corpo hoje. Pequenas pausas renovam sua energia.",
+        "Beber água ao longo do dia ajuda a reduzir a retenção de líquidos e o cansaço.",
+        "Cada fase do seu ciclo traz necessidades diferentes. Acolha o que você sente.",
+        "Um sono regular contribui diretamente para o equilíbrio hormonal e emocional.",
+        "Você não precisa estar produtiva o tempo todo. Descansar também é cuidar de si.",
+        "Anotar seus sinais ajuda você a reconhecer padrões únicos do seu próprio corpo.",
+        "Movimentos suaves, como caminhar ou alongar, podem aliviar tensões físicas."
+      ];
+
+      const SELF_CARE_TASKS = [
+        { id: "water", label: "Beber pelo menos 6 copos de água" },
+        { id: "rest", label: "Fazer uma pausa tranquila de 15 minutos" },
+        { id: "move", label: "Movimentar ou alongar o corpo" },
+        { id: "check", label: "Registrar como me sinto hoje" }
+      ];
+
+      const SYMPTOMS_LIST = [
+        { id: "colicas", label: "Cólicas" },
+        { id: "dor_cabeca", label: "Dor de cabeça" },
+        { id: "inchaco", label: "Inchaço" },
+        { id: "acne", label: "Acne" },
+        { id: "cansaco", label: "Cansaço" },
+        { id: "nausea", label: "Náusea" },
+        { id: "dor_costas", label: "Dor nas costas" },
+        { id: "apetite", label: "Alt. de apetite" },
+        { id: "seios", label: "Sensib. nos seios" },
+        { id: "tontura", label: "Tontura" },
+        { id: "outros", label: "Outros sintomas" }
+      ];
+
+      const MOODS_LIST = [
+        { id: "Feliz", label: "Feliz", icon: "M8 14s1.5 2 4 2 4-2 4-2" },
+        { id: "Tranquila", label: "Tranquila", icon: "M8 15h8" },
+        { id: "Triste", label: "Triste", icon: "M16 16s-1.5-2-4-2-4 2-4 2" },
+        { id: "Irritada", label: "Irritada", icon: "M8 16l4-2 4 2" },
+        { id: "Ansiosa", label: "Ansiosa", icon: "M8 15c1-1 2 1 3 0s2 1 3 0 2 1 2 0" },
+        { id: "Sensível", label: "Sensível", icon: "M9 15s1.5 1.5 3 1.5 3-1.5 3-1.5" },
+        { id: "Sem energia", label: "Sem energia", icon: "M9 15h6" },
+        { id: "Motivada", label: "Motivada", icon: "M7 13s2 3 5 3 5-3 5-3" }
+      ];
+
+      const ACTIVITIES_LIST = [
+        "Caminhada",
+        "Alongamento / Yoga",
+        "Treino / Academia",
+        "Leitura",
+        "Meditação",
+        "Descanso extra",
+        "Bolsa de água morna",
+        "Skincare / Banho quente"
+      ];
+
+      /* 13 Tópicos Educativos Completos e Cientificamente Responsáveis */
+      const EDUCATIONAL_ARTICLES = [
+        {
+          id: "menstruacao",
+          category: "Fisiologia",
+          title: "Menstruação",
+          excerpt: "O que acontece no útero durante o sangramento menstrual e o que é esperado.",
+          color: "#FDE8EC",
+          accent: "#D46F7F",
+          content: `
+            <p>A menstruação é a descamação natural da camada interna do útero (o endométrio), que se prepara todos os meses para receber uma possível gestação. Quando não há fecundação, os níveis hormonais caem e esse tecido é eliminado pelo canal vaginal.</p>
+            <h4>O que costuma ser esperado?</h4>
+            <ul>
+              <li><strong>Duração:</strong> Geralmente varia entre 3 e 7 dias.</li>
+              <li><strong>Coloração:</strong> Pode ir do vermelho vivo ao marrom escuro (sangue que levou mais tempo para sair), sendo ambas variações comuns.</li>
+              <li><strong>Volume:</strong> O fluxo tende a ser mais intenso nos primeiros 2 dias e diminuir gradualmente.</li>
+            </ul>
+            <p>Acompanhar a duração e a intensidade do seu fluxo ajuda você a conhecer o padrão habitual do seu corpo.</p>
+          `
+        },
+        {
+          id: "ciclo-menstrual",
+          category: "Fisiologia",
+          title: "Ciclo menstrual",
+          excerpt: "Entenda as fases do ciclo e por que a duração varia de mulher para mulher.",
+          color: "#EFEAF8",
+          accent: "#7E66AD",
+          content: `
+            <p>O ciclo menstrual começa no primeiro dia da menstruação e termina no dia anterior à menstruação seguinte. Embora 28 dias seja a média clássica dos livros, ciclos regulares podem durar entre <strong>21 e 35 dias</strong>.</p>
+            <h4>As quatro fases principais</h4>
+            <ul>
+              <li><strong>Fase Menstrual:</strong> Dias de sangramento, quando estrogênio e progesterona estão baixos.</li>
+              <li><strong>Fase Folicular:</strong> O corpo estimula o amadurecimento de folículos ovarianos e o estrogênio sobe gradualmente.</li>
+              <li><strong>Ovulação:</strong> Liberação de um óvulo maduro pelo ovário, geralmente no meio do ciclo.</li>
+              <li><strong>Fase Lútea:</strong> A progesterona predomina para preparar o útero. Se não houver gravidez, o ciclo recomeça.</li>
+            </ul>
+          `
+        },
+        {
+          id: "ovulacao",
+          category: "Fertilidade & Corpo",
+          title: "Ovulação",
+          excerpt: "Como ocorre a liberação do óvulo e por que a data exata pode oscilar.",
+          color: "#EFEAF8",
+          accent: "#7E66AD",
+          content: `
+            <p>A ovulação ocorre quando um dos ovários libera um óvulo maduro, que segue pelas tubas uterinas. Esse processo é desencadeado por um pico do hormônio luteinizante (LH).</p>
+            <h4>Sinais físicos comuns</h4>
+            <ul>
+              <li>Secreção vaginal mais transparente, elástica e escorregadia (semelhante à clara de ovo).</li>
+              <li>Leve aumento da disposição ou libido em algumas pessoas.</li>
+              <li>Pequeno desconforto pélvico unilateral passageiro.</li>
+            </ul>
+            <p><strong>Importante:</strong> Fatores como estresse, viagens, alterações de sono ou mudanças hormonais podem adiantar ou atrasar a ovulação. Por isso, aplicativos fornecem apenas estimativas.</p>
+          `
+        },
+        {
+          id: "hormonios",
+          category: "Endocrinologia",
+          title: "Hormônios",
+          excerpt: "O papel do estrogênio, progesterona, FSH e LH no bem-estar diário.",
+          color: "#FDE8EC",
+          accent: "#D46F7F",
+          content: `
+            <p>O ciclo feminino é coordenado por uma comunicação delicada entre o cérebro (hipotálamo e hipófise) e os ovários.</p>
+            <ul>
+              <li><strong>FSH e LH:</strong> Hormônios produzidos pela hipófise que estimulam os ovários e coordenam a ovulação.</li>
+              <li><strong>Estrogênio:</strong> Predomina na primeira metade do ciclo, associado à renovação do endométrio, vitalidade e lubrificação natural.</li>
+              <li><strong>Progesterona:</strong> Predomina após a ovulação, preparando o útero e podendo trazer sensação de maior calma ou sonolência.</li>
+            </ul>
+          `
+        },
+        {
+          id: "tpm",
+          category: "Bem-estar",
+          title: "TPM (Tensão Pré-Menstrual)",
+          excerpt: "Por que acontecem mudanças emocionais e físicas antes da menstruação.",
+          color: "#FDF1E8",
+          accent: "#C8765E",
+          content: `
+            <p>A Tensão Pré-Menstrual (TPM) reúne sintomas físicos e emocionais que surgem na fase lútea (dias antes da menstruação) e costumam melhorar logo após o início do sangramento.</p>
+            <h4>Manifestações frequentes</h4>
+            <ul>
+              <li>Sensibilidade emocional, irritabilidade ou maior necessidade de recolhimento.</li>
+              <li>Inchaço abdominal, sensibilidade nos seios e alterações no apetite.</li>
+            </ul>
+            <p>Hábitos como sono regular, redução de excesso de sal e cafeína, hidratação e exercícios leves podem trazer alívio significativo. Caso os sintomas prejudiquem sua rotina intensamente, converse com um profissional de saúde.</p>
+          `
+        },
+        {
+          id: "colicas",
+          category: "Sintomas",
+          title: "Cólicas menstruais",
+          excerpt: "O que causa a dismenorreia e medidas suaves de conforto.",
+          color: "#FDE8EC",
+          accent: "#D46F7F",
+          content: `
+            <p>As cólicas menstruais (dismenorreia) acontecem porque o útero se contrai para ajudar a eliminar o endométrio. Essas contrações são estimuladas por substâncias naturais chamadas <strong>prostaglandinas</strong>.</p>
+            <h4>Medidas caseiras de conforto</h4>
+            <ul>
+              <li>Aplicar bolsa de água morna na região inferior do abdômen ajuda a relaxar a musculatura.</li>
+              <li>Alongamentos suaves e respiração profunda reduzem a tensão pélvica.</li>
+              <li>Manter boa hidratação e alimentação leve.</li>
+            </ul>
+            <p>Cólicas muito fortes que impedem atividades cotidianas ou não melhoram com medidas habituais merecem avaliação ginecológica para investigar causas como endometriose.</p>
+          `
+        },
+        {
+          id: "saude-intima",
+          category: "Cuidados",
+          title: "Saúde íntima",
+          excerpt: "Equilíbrio da flora vaginal e proteção natural do organismo.",
+          color: "#EAF5F0",
+          accent: "#4E8D73",
+          content: `
+            <p>A vagina possui um ecossistema próprio, protegido principalmente pelos <strong>lactobacilos</strong>, bactérias benéficas que mantêm o pH levemente ácido (entre 3,8 e 4,5), dificultando a proliferação de micro-organismos indesejados.</p>
+            <h4>Como preservar esse equilíbrio</h4>
+            <ul>
+              <li>Prefira roupas íntimas de algodão, que permitem melhor ventilação.</li>
+              <li>Evite duchas vaginais internas, pois elas removem a proteção natural.</li>
+              <li>Troque absorventes ou coletores dentro do tempo recomendado.</li>
+            </ul>
+          `
+        },
+        {
+          id: "corrimento",
+          category: "Sinais do Corpo",
+          title: "Secreção vaginal e corrimento",
+          excerpt: "Como diferenciar a secreção fisiológica normal de sinais de alerta.",
+          color: "#EFEAF8",
+          accent: "#7E66AD",
+          content: `
+            <p>Ter secreção vaginal natural é saudável e demonstra que o corpo está mantendo a limpeza e lubrificação da região íntima. Sua aparência muda conforme a fase do ciclo: mais cremosa após a menstruação e mais transparente e elástica perto da ovulação.</p>
+            <h4>Quando observar com atenção</h4>
+            <ul>
+              <li>Alteração acentuada de cor (esverdeada, acinzentada ou amarelada intensa).</li>
+              <li>Odor forte e desagradável.</li>
+              <li>Coceira, ardência ao urinar, vermelhidão ou dor.</li>
+            </ul>
+            <p>Nesses casos, procure avaliação médica para diagnóstico adequado e evite automedicação.</p>
+          `
+        },
+        {
+          id: "puberdade",
+          category: "Fases da Vida",
+          title: "Puberdade e primeiros ciclos",
+          excerpt: "O amadurecimento hormonal e a irregularidade inicial nos primeiros anos.",
+          color: "#FDF1E8",
+          accent: "#C8765E",
+          content: `
+            <p>A primeira menstruação (menarca) marca uma etapa importante do amadurecimento corporal. Nos primeiros 2 a 3 anos após a menarca, é muito comum que os ciclos sejam irregulares.</p>
+            <p>Isso ocorre porque o eixo hormonal entre o cérebro e os ovários ainda está amadurecendo e nem todos os ciclos iniciais envolvem ovulação regular. Registrar as datas desde cedo ajuda a acompanhar essa adaptação com tranquilidade.</p>
+          `
+        },
+        {
+          id: "higiene-intima",
+          category: "Cuidados",
+          title: "Higiene íntima no dia a dia",
+          excerpt: "Práticas simples e gentis para cuidar da região externa sem agressões.",
+          color: "#EAF5F0",
+          accent: "#4E8D73",
+          content: `
+            <p>A higiene íntima deve ser simples, delicada e focada apenas na parte externa (a vulva). O canal vaginal é autolimpante e não deve ser lavado internamente.</p>
+            <ul>
+              <li>Lave a vulva com água corrente e, se desejar, sabonete suave com pH adequado à região íntima.</li>
+              <li>Após ir ao banheiro, faça a higiene sempre de frente para trás.</li>
+              <li>Evite permanecer por longos períodos com roupas de banho ou roupas de treino úmidas.</li>
+            </ul>
+          `
+        },
+        {
+          id: "alteracoes-ciclo",
+          category: "Atenção ao Ciclo",
+          title: "Alterações do ciclo",
+          excerpt: "Fatores cotidianos e clínicos que podem atrasar ou adiantar a menstruação.",
+          color: "#EFEAF8",
+          accent: "#7E66AD",
+          content: `
+            <p>Um ciclo pontualmente diferente do habitual nem sempre indica um problema grave. O sistema reprodutivo é sensível ao estado geral do organismo.</p>
+            <h4>Fatores comuns que influenciam o ciclo</h4>
+            <ul>
+              <li>Estresse emocional intenso ou privação de sono.</li>
+              <li>Mudanças bruscas de peso, dietas restritivas ou exercícios físicos extenuantes.</li>
+              <li>Início ou suspensão de métodos contraceptivos hormonais.</li>
+              <li>Condições como Síndrome dos Ovários Policísticos (SOP) ou alterações da tireoide.</li>
+            </ul>
+          `
+        },
+        {
+          id: "mitos-verdades",
+          category: "Educação",
+          title: "Mitos e verdades sobre o ciclo",
+          excerpt: "Esclarecimentos baseados em evidências sobre dúvidas frequentes.",
+          color: "#FDF1E8",
+          accent: "#C8765E",
+          content: `
+            <ul>
+              <li><strong>"Não pode lavar o cabelo menstruada." — MITO.</strong> Não há qualquer restrição médica quanto a banhos ou lavar os cabelos durante a menstruação.</li>
+              <li><strong>"É possível engravidar fora do dia exato da ovulação." — VERDADE.</strong> Os espermatozoides podem sobreviver por até 5 dias no trato reprodutivo feminino, criando uma janela fértil de vários dias.</li>
+              <li><strong>"Ciclo saudável tem sempre exatos 28 dias." — MITO.</strong> Ciclos entre 21 e 35 dias com variações de poucos dias entre si são considerados regulares.</li>
+            </ul>
+          `
+        },
+        {
+          id: "quando-procurar-medico",
+          category: "Segurança & Saúde",
+          title: "Quando procurar atendimento médico",
+          excerpt: "Sinais de alerta que justificam uma consulta ginecológica.",
+          color: "#FDE8EC",
+          accent: "#D46F7F",
+          content: `
+            <p>O acompanhamento ginecológico preventivo é recomendado regularmente, mesmo sem sintomas. Além disso, procure avaliação profissional se notar:</p>
+            <ul>
+              <li>Sangramento muito intenso (necessidade de trocar absorvente a cada 1 ou 2 horas por várias horas seguidas).</li>
+              <li>Menstruação com duração superior a 8 dias ou sangramentos fora do período esperado.</li>
+              <li>Ausência de menstruação por mais de 3 meses (sem gestação ou uso contínuo de contraceptivo).</li>
+              <li>Cólicas incapacitantes ou dor pélvica persistente.</li>
+              <li>Corrimento com odor forte, coceira, ardor ou febre.</li>
+            </ul>
+            <p><strong>Nota:</strong> O LUNA é uma ferramenta de autoconhecimento e não substitui consultas, exames ou orientações médicas.</p>
+          `
+        }
+      ];
+
+      /* ----------------------------------------------------------------------
+         2. GERENCIAMENTO DE ESTADO & PERSISTÊNCIA (LOCALSTORAGE)
+         ---------------------------------------------------------------------- */
+      const DEFAULT_STATE = {
+        profile: {
+          name: "Usuária",
+          cycleLength: 28,
+          periodLength: 5,
+          theme: "rose",
+          reminders: true,
+          isPremiumPreview: false
+        },
+        periodDays: [], // Array de strings ISO "YYYY-MM-DD"
+        diaryEntries: {}, // Mapa { "YYYY-MM-DD": { mood, symptoms, intensity, sleepStart, sleepEnd, sleepQuality, energy, water, activities, notes } }
+        selfCareDone: {} // Mapa { "YYYY-MM-DD": ["water", "rest"] }
+      };
+
+      let appState = loadState();
+      let currentCalDate = new Date();
+      let selectedDiaryDate = getTodayISO();
+      let tempDiaryForm = null;
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+          const parsed = JSON.parse(raw);
+          return {
+            profile: Object.assign({}, DEFAULT_STATE.profile, parsed.profile || {}),
+            periodDays: Array.isArray(parsed.periodDays) ? Array.from(new Set(parsed.periodDays)).sort() : [],
+            diaryEntries: parsed.diaryEntries && typeof parsed.diaryEntries === "object" ? parsed.diaryEntries : {},
+            selfCareDone: parsed.selfCareDone && typeof parsed.selfCareDone === "object" ? parsed.selfCareDone : {}
+          };
+        } catch (err) {
+          console.error("Erro ao carregar dados locais:", err);
+          return JSON.parse(JSON.stringify(DEFAULT_STATE));
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        } catch (err) {
+          showToast("Não foi possível salvar no armazenamento local.");
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         3. UTILITÁRIOS DE DATA E FORMATAÇÃO
+         ---------------------------------------------------------------------- */
+      function getTodayISO() {
+        return toISODate(new Date());
+      }
+
+      function toISODate(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const d = String(dateObj.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
+
+      function parseISODate(isoStr) {
+        const [y, m, d] = isoStr.split("-").map(Number);
+        return new Date(y, m - 1, d, 12, 0, 0);
+      }
+
+      function addDaysISO(isoStr, days) {
+        const dt = parseISODate(isoStr);
+        dt.setDate(dt.getDate() + days);
+        return toISODate(dt);
+      }
+
+      function diffDaysISO(startISO, endISO) {
+        const a = parseISODate(startISO);
+        const b = parseISODate(endISO);
+        return Math.round((b - a) / (1000 * 60 * 60 * 24));
+      }
+
+      function formatShortDateBR(isoStr) {
+        const dt = parseISODate(isoStr);
+        return dt.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+      }
+
+      function formatFullDateBR(isoStr) {
+        const dt = parseISODate(isoStr);
+        return dt.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+      }
+
+      /* ----------------------------------------------------------------------
+         4. MOTOR DE CÁLCULO DINÂMICO DO CICLO MENSTRUAL
+         ---------------------------------------------------------------------- */
+      function extractMenstrualPeriods(sortedDays) {
+        if (!sortedDays || sortedDays.length === 0) return [];
+        const periods = [];
+        let current = { start: sortedDays[0], end: sortedDays[0], days: [sortedDays[0]] };
+
+        for (let i = 1; i < sortedDays.length; i++) {
+          const gap = diffDaysISO(current.end, sortedDays[i]);
+          if (gap <= 2) {
+            current.end = sortedDays[i];
+            current.days.push(sortedDays[i]);
+          } else {
+            periods.push(current);
+            current = { start: sortedDays[i], end: sortedDays[i], days: [sortedDays[i]] };
+          }
+        }
+        periods.push(current);
+        return periods;
+      }
+
+      function getCycleAnalytics() {
+        const periods = extractMenstrualPeriods(appState.periodDays);
+        const configuredCycle = Number(appState.profile.cycleLength) || 28;
+        const configuredPeriod = Number(appState.profile.periodLength) || 5;
+
+        const cycleLengths = [];
+        for (let i = 1; i < periods.length; i++) {
+          const len = diffDaysISO(periods[i - 1].start, periods[i].start);
+          if (len >= 18 && len <= 60) {
+            cycleLengths.push(len);
+          }
+        }
+
+        const periodDurations = periods.map(p => diffDaysISO(p.start, p.end) + 1);
+
+        const avgCycleLength = cycleLengths.length > 0
+          ? Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
+          : configuredCycle;
+
+        const avgPeriodLength = periodDurations.length > 0
+          ? Math.round(periodDurations.reduce((a, b) => a + b, 0) / periodDurations.length)
+          : configuredPeriod;
+
+        let isIrregular = false;
+        if (cycleLengths.length >= 2) {
+          const minC = Math.min(...cycleLengths);
+          const maxC = Math.max(...cycleLengths);
+          if (maxC - minC > 7) isIrregular = true;
+        }
+
+        const todayISO = getTodayISO();
+        const lastPeriod = periods.length > 0 ? periods[periods.length - 1] : null;
+
+        const predictedPeriodSet = new Set();
+        const fertileWindowSet = new Set();
+        const ovulationSet = new Set();
+
+        let nextPeriodStart = null;
+        let currentCycleDay = null;
+        let currentPhase = { name: "Aguardando registro", color: "#9B85C4", progress: 0.15 };
+
+        if (lastPeriod) {
+          currentCycleDay = diffDaysISO(lastPeriod.start, todayISO) + 1;
+          if (currentCycleDay < 1) currentCycleDay = 1;
+
+          for (let c = 1; c <= 4; c++) {
+            const projStart = addDaysISO(lastPeriod.start, avgCycleLength * c);
+            if (c === 1) nextPeriodStart = projStart;
+
+            for (let d = 0; d < avgPeriodLength; d++) {
+              predictedPeriodSet.add(addDaysISO(projStart, d));
+            }
+
+            const ovDay = addDaysISO(projStart, -14);
+            ovulationSet.add(ovDay);
+
+            for (let f = -4; f <= 1; f++) {
+              fertileWindowSet.add(addDaysISO(ovDay, f));
+            }
+          }
+
+          const currentOvDay = addDaysISO(lastPeriod.start, avgCycleLength - 14);
+          ovulationSet.add(currentOvDay);
+          for (let f = -4; f <= 1; f++) {
+            fertileWindowSet.add(addDaysISO(currentOvDay, f));
+          }
+
+          const isCurrentlyBleeding = appState.periodDays.includes(todayISO);
+          const progress = Math.min(1, Math.max(0.06, currentCycleDay / avgCycleLength));
+
+          if (isCurrentlyBleeding) {
+            currentPhase = { name: "Fase Menstrual", color: "#E88D9B", progress };
+          } else if (fertileWindowSet.has(todayISO)) {
+            currentPhase = { name: "Janela Fértil Est.", color: "#9B85C4", progress };
+          } else if (currentCycleDay < avgCycleLength - 14) {
+            currentPhase = { name: "Fase Folicular", color: "#E5A98C", progress };
+          } else {
+            currentPhase = { name: "Fase Lútea", color: "#B89AD8", progress };
+          }
+        }
+
+        return {
+          periods,
+          cycleLengths,
+          periodDurations,
+          avgCycleLength,
+          avgPeriodLength,
+          isIrregular,
+          lastPeriod,
+          nextPeriodStart,
+          currentCycleDay,
+          currentPhase,
+          predictedPeriodSet,
+          fertileWindowSet,
+          ovulationSet
+        };
+      }
+
+      /* ----------------------------------------------------------------------
+         5. NAVEGAÇÃO ENTRE ABAS E MODAIS
+         ---------------------------------------------------------------------- */
+      function switchTab(tabName) {
+        document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+        document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+
+        const targetScreen = document.getElementById(`screen-${tabName}`);
+        const targetNav = document.querySelector(`.nav-item[data-target="${tabName}"]`);
+
+        if (targetScreen) targetScreen.classList.add("active");
+        if (targetNav) targetNav.classList.add("active");
+
+        document.getElementById("appMain").scrollTo({ top: 0, behavior: "smooth" });
+
+        if (tabName === "home") renderHome();
+        if (tabName === "calendar") renderCalendar();
+        if (tabName === "diary") renderDiaryScreen();
+        if (tabName === "learn") renderLearnScreen();
+        if (tabName === "profile") renderProfileScreen();
+      }
+
+      function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.add("open");
+      }
+
+      function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.remove("open");
+      }
+
+      let toastTimer = null;
+      function showToast(message) {
+        const box = document.getElementById("toastBox");
+        box.textContent = message;
+        box.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          box.classList.remove("show");
+        }, 2800);
+      }
+
+      /* ----------------------------------------------------------------------
+         6. RENDERIZAÇÃO DA TELA INICIAL (INÍCIO)
+         ---------------------------------------------------------------------- */
+      function renderHome() {
+        const todayISO = getTodayISO();
+        const analytics = getCycleAnalytics();
+        const userName = appState.profile.name || "Usuária";
+
+        const hour = new Date().getHours();
+        let greetPrefix = "Olá";
+        if (hour >= 5 && hour < 12) greetPrefix = "Bom dia";
+        else if (hour >= 12 && hour < 18) greetPrefix = "Boa tarde";
+        else greetPrefix = "Boa noite";
+
+        document.getElementById("homeCurrentDate").textContent = formatFullDateBR(todayISO);
+        document.getElementById("homeGreeting").textContent = `${greetPrefix}, ${userName}`;
+
+        const arc = document.getElementById("cycleProgressArc");
+        const circumference = 314.16;
+        const offset = circumference - (analytics.currentPhase.progress * circumference);
+        arc.style.strokeDashoffset = offset.toFixed(1);
+        arc.style.stroke = analytics.currentPhase.color;
+
+        document.getElementById("heroPhaseName").textContent = analytics.currentPhase.name;
+        document.getElementById("heroPhaseDot").style.background = analytics.currentPhase.color;
+
+        if (analytics.lastPeriod && analytics.nextPeriodStart) {
+          document.getElementById("heroCycleDay").textContent = `Dia ${analytics.currentCycleDay}`;
+          const daysUntilNext = diffDaysISO(todayISO, analytics.nextPeriodStart);
+
+          if (appState.periodDays.includes(todayISO)) {
+            document.getElementById("heroCountdown").textContent = "Menstruação em andamento";
+          } else if (daysUntilNext > 1) {
+            document.getElementById("heroCountdown").textContent = `Faltam ${daysUntilNext} dias`;
+          } else if (daysUntilNext === 1) {
+            document.getElementById("heroCountdown").textContent = "Prevista para amanhã";
+          } else if (daysUntilNext === 0) {
+            document.getElementById("heroCountdown").textContent = "Prevista para hoje";
+          } else {
+            document.getElementById("heroCountdown").textContent = `${Math.abs(daysUntilNext)} dia(s) após previsão`;
+          }
+
+          let note = `Próxima estimada: ${formatShortDateBR(analytics.nextPeriodStart)} (ciclo de ${analytics.avgCycleLength} dias).`;
+          if (analytics.isIrregular) {
+            note += " Seu histórico apresenta variações naturais.";
+          }
+          document.getElementById("heroSubnote").textContent = note;
+        } else {
+          document.getElementById("heroCycleDay").textContent = "--";
+          document.getElementById("heroCountdown").textContent = "Registre sua menstruação";
+          document.getElementById("heroSubnote").textContent = "Adicione suas datas para visualizar a estimativa do próximo ciclo.";
+        }
+
+        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+        document.getElementById("dailyCareMessage").textContent = DAILY_MESSAGES[dayOfYear % DAILY_MESSAGES.length];
+
+        const todayLog = appState.diaryEntries[todayISO];
+        if (todayLog && todayLog.mood) {
+          document.getElementById("homeMoodValue").textContent = todayLog.mood;
+          const sympCount = (todayLog.symptoms || []).length;
+          document.getElementById("homeMoodSub").textContent = sympCount > 0 ? `${sympCount} sintoma(s) registrado(s)` : "Nenhum sintoma físico";
+        } else {
+          document.getElementById("homeMoodValue").textContent = "Não registrado";
+          document.getElementById("homeMoodSub").textContent = "Toque para registrar";
+        }
+
+        if (todayLog && todayLog.sleepStart && todayLog.sleepEnd) {
+          const hrs = calculateSleepHours(todayLog.sleepStart, todayLog.sleepEnd);
+          document.getElementById("homeSleepValue").textContent = `${hrs} de sono`;
+          document.getElementById("homeWaterSub").textContent = `${todayLog.water || 0} copos de água`;
+        } else {
+          document.getElementById("homeSleepValue").textContent = "-- h de sono";
+          document.getElementById("homeWaterSub").textContent = `${(todayLog && todayLog.water) || 0} copos de água`;
+        }
+
+        const doneList = appState.selfCareDone[todayISO] || [];
+        document.getElementById("careProgressText").textContent = `${doneList.length}/${SELF_CARE_TASKS.length}`;
+        const checklistEl = document.getElementById("dailyCareChecklist");
+        checklistEl.innerHTML = "";
+
+        SELF_CARE_TASKS.forEach(task => {
+          const isDone = doneList.includes(task.id);
+          const item = document.createElement("div");
+          item.className = `care-item ${isDone ? "completed" : ""}`;
+          item.innerHTML = `
+            <span class="care-checkbox">${isDone ? "✓" : ""}</span>
+            <span class="care-text">${task.label}</span>
+          `;
+          item.addEventListener("click", () => toggleSelfCareTask(task.id));
+          checklistEl.appendChild(item);
+        });
+      }
+
+      function toggleSelfCareTask(taskId) {
+        const todayISO = getTodayISO();
+        if (!appState.selfCareDone[todayISO]) appState.selfCareDone[todayISO] = [];
+        const idx = appState.selfCareDone[todayISO].indexOf(taskId);
+        if (idx >= 0) {
+          appState.selfCareDone[todayISO].splice(idx, 1);
+        } else {
+          appState.selfCareDone[todayISO].push(taskId);
+          showToast("Autocuidado atualizado!");
+        }
+        saveState();
+        renderHome();
+      }
+
+      /* ----------------------------------------------------------------------
+         7. RENDERIZAÇÃO DO CALENDÁRIO MENSTRUAL INTERATIVO
+         ---------------------------------------------------------------------- */
+      function renderCalendar() {
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        const todayISO = getTodayISO();
+        const analytics = getCycleAnalytics();
+
+        const monthLabel = new Date(year, month, 1).toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+        document.getElementById("calMonthTitle").textContent = monthLabel;
+
+        const firstWeekday = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const grid = document.getElementById("calendarGrid");
+        grid.innerHTML = "";
+
+        for (let i = 0; i < firstWeekday; i++) {
+          const empty = document.createElement("div");
+          empty.className = "cal-day empty";
+          grid.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const iso = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const cell = document.createElement("button");
+          cell.type = "button";
+          cell.className = "cal-day";
+
+          if (iso === todayISO) cell.classList.add("today");
+
+          if (appState.periodDays.includes(iso)) {
+            cell.classList.add("period-actual");
+          } else if (analytics.predictedPeriodSet.has(iso)) {
+            cell.classList.add("period-predicted");
+          } else if (analytics.ovulationSet.has(iso)) {
+            cell.classList.add("ovulation-day");
+          } else if (analytics.fertileWindowSet.has(iso)) {
+            cell.classList.add("fertile-window");
+          }
+
+          const log = appState.diaryEntries[iso];
+          const hasSymptoms = log && log.symptoms && log.symptoms.length > 0;
+          const hasMood = log && log.mood;
+
+          let dotsHTML = "";
+          if (hasSymptoms || hasMood) {
+            dotsHTML = `<div class="cal-dots">
+              ${hasMood ? '<span class="cal-dot"></span>' : ""}
+              ${hasSymptoms ? '<span class="cal-dot" style="background:var(--primary-dark);"></span>' : ""}
+            </div>`;
+          }
+
+          cell.innerHTML = `<span>${day}</span>${dotsHTML}`;
+          cell.addEventListener("click", () => openDayDetailModal(iso));
+          grid.appendChild(cell);
+        }
+
+        const statsEl = document.getElementById("calStatsSummary");
+        if (analytics.periods.length === 0) {
+          statsEl.textContent = "Nenhum período menstrual registrado ainda. Toque em uma data acima para começar.";
+        } else {
+          statsEl.innerHTML = `Ciclo médio estimado: <strong>${analytics.avgCycleLength} dias</strong> • Duração média da menstruação: <strong>${analytics.avgPeriodLength} dias</strong> • Total de períodos registrados: <strong>${analytics.periods.length}</strong>.`;
+        }
+      }
+
+      function openDayDetailModal(isoStr) {
+        const analytics = getCycleAnalytics();
+        const isPeriod = appState.periodDays.includes(isoStr);
+        const isPredicted = analytics.predictedPeriodSet.has(isoStr);
+        const isOvulation = analytics.ovulationSet.has(isoStr);
+        const isFertile = analytics.fertileWindowSet.has(isoStr);
+        const log = appState.diaryEntries[isoStr];
+
+        document.getElementById("modalDayTitle").textContent = formatFullDateBR(isoStr);
+
+        let statusBadge = "Dia regular do ciclo";
+        if (isPeriod) statusBadge = "Menstruação registrada";
+        else if (isPredicted) statusBadge = "Previsão de menstruação";
+        else if (isOvulation) statusBadge = "Ovulação estimada";
+        else if (isFertile) statusBadge = "Janela fértil estimada";
+
+        let logSummaryHTML = `<p style="font-size:0.82rem;color:var(--text-muted);margin:10px 0;">Nenhum sintoma, humor ou sono registrado nesta data.</p>`;
+        if (log) {
+          const sympLabels = (log.symptoms || []).map(id => {
+            const found = SYMPTOMS_LIST.find(s => s.id === id);
+            return found ? found.label : id;
+          });
+          logSummaryHTML = `
+            <div class="card card-soft" style="margin:12px 0;padding:12px;">
+              <div style="font-size:0.8rem;margin-bottom:4px;"><strong>Humor:</strong> ${log.mood || "Não informado"}</div>
+              <div style="font-size:0.8rem;margin-bottom:4px;"><strong>Sintomas:</strong> ${sympLabels.length ? sympLabels.join(", ") + " (" + (log.intensity || "Leve") + ")" : "Nenhum"}</div>
+              <div style="font-size:0.8rem;margin-bottom:4px;"><strong>Sono & Água:</strong> ${log.sleepStart && log.sleepEnd ? calculateSleepHours(log.sleepStart, log.sleepEnd) : "--"} • ${log.water || 0} copos</div>
+              ${log.notes ? `<div style="font-size:0.78rem;color:var(--text-secondary);margin-top:6px;">"${escapeHTML(log.notes)}"</div>` : ""}
+            </div>
+          `;
+        }
+
+        const container = document.getElementById("modalDayContent");
+        container.innerHTML = `
+          <div class="phase-pill" style="background:var(--surface-rose);margin-bottom:10px;">
+            <span class="phase-dot"></span>
+            <span>${statusBadge}</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+            <button type="button" class="btn ${isPeriod ? "btn-danger" : "btn-primary"} btn-block" id="btnToggleSinglePeriodDay">
+              ${isPeriod ? "Remover marcação de menstruação neste dia" : "Marcar este dia como menstruação"}
+            </button>
+
+            ${!isPeriod ? `
+              <button type="button" class="btn btn-soft-rose btn-block" id="btnStartPeriodCycle">
+                Registrar início de menstruação (${appState.profile.periodLength} dias)
+              </button>
+            ` : `
+              <button type="button" class="btn btn-secondary btn-block" id="btnEndPeriodHere">
+                Definir este dia como fim da menstruação
+              </button>
+            `}
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--border-soft);margin:16px 0;" />
+          <strong style="font-size:0.88rem;">Registros do Diário nesta data</strong>
+          ${logSummaryHTML}
+
+          <button type="button" class="btn btn-soft-lavender btn-block" id="btnGoDiaryForDate">
+            Editar sintomas, humor e sono nesta data
+          </button>
+        `;
+
+        document.getElementById("btnToggleSinglePeriodDay").addEventListener("click", () => {
+          togglePeriodDay(isoStr);
+          closeModal("modalDayDetail");
+        });
+
+        const btnStart = document.getElementById("btnStartPeriodCycle");
+        if (btnStart) {
+          btnStart.addEventListener("click", () => {
+            const len = Number(appState.profile.periodLength) || 5;
+            for (let i = 0; i < len; i++) {
+              const d = addDaysISO(isoStr, i);
+              if (!appState.periodDays.includes(d)) appState.periodDays.push(d);
+            }
+            appState.periodDays.sort();
+            saveState();
+            renderCalendar();
+            renderHome();
+            closeModal("modalDayDetail");
+            showToast("Início da menstruação registrado!");
+          });
+        }
+
+        const btnEnd = document.getElementById("btnEndPeriodHere");
+        if (btnEnd) {
+          btnEnd.addEventListener("click", () => {
+            let nextD = addDaysISO(isoStr, 1);
+            while (appState.periodDays.includes(nextD)) {
+              appState.periodDays = appState.periodDays.filter(x => x !== nextD);
+              nextD = addDaysISO(nextD, 1);
+            }
+            saveState();
+            renderCalendar();
+            renderHome();
+            closeModal("modalDayDetail");
+            showToast("Fim da menstruação atualizado!");
+          });
+        }
+
+        document.getElementById("btnGoDiaryForDate").addEventListener("click", () => {
+          selectedDiaryDate = isoStr;
+          closeModal("modalDayDetail");
+          switchTab("diary");
+        });
+
+        openModal("modalDayDetail");
+      }
+
+      function togglePeriodDay(isoStr) {
+        const idx = appState.periodDays.indexOf(isoStr);
+        if (idx >= 0) {
+          appState.periodDays.splice(idx, 1);
+          showToast("Dia removido da menstruação.");
+        } else {
+          appState.periodDays.push(isoStr);
+          appState.periodDays.sort();
+          showToast("Dia de menstruação registrado!");
+        }
+        saveState();
+        renderCalendar();
+        renderHome();
+      }
+
+      /* ----------------------------------------------------------------------
+         8. DIÁRIO DE SINTOMAS, HUMOR E SONO/BEM-ESTAR
+         ---------------------------------------------------------------------- */
+      function calculateSleepHours(startStr, endStr) {
+        if (!startStr || !endStr) return "-- h";
+        const [sh, sm] = startStr.split(":").map(Number);
+        const [eh, em] = endStr.split(":").map(Number);
+        let startMins = sh * 60 + sm;
+        let endMins = eh * 60 + em;
+        if (endMins <= startMins) endMins += 24 * 60;
+        const diff = endMins - startMins;
+        const h = Math.floor(diff / 60);
+        const m = diff % 60;
+        return m > 0 ? `${h}h ${m}m` : `${h}h`;
+      }
+
+      function loadDiaryFormForDate(isoStr) {
+        const existing = appState.diaryEntries[isoStr];
+        tempDiaryForm = existing
+          ? JSON.parse(JSON.stringify(existing))
+          : {
+              mood: "",
+              symptoms: [],
+              intensity: "Leve",
+              sleepStart: "23:00",
+              sleepEnd: "07:00",
+              sleepQuality: 3,
+              energy: "Média",
+              water: 0,
+              activities: [],
+              notes: ""
+            };
+      }
+
+      function renderDiaryScreen() {
+        const dateInput = document.getElementById("diaryDateInput");
+        dateInput.value = selectedDiaryDate;
+
+        if (!tempDiaryForm) loadDiaryFormForDate(selectedDiaryDate);
+
+        // Renderiza grade de Humor
+        const moodGrid = document.getElementById("moodGrid");
+        moodGrid.innerHTML = "";
+        MOODS_LIST.forEach(m => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `mood-chip ${tempDiaryForm.mood === m.id ? "active" : ""}`;
+          btn.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+              <path d="${m.icon}"/>
+            </svg>
+            <span>${m.label}</span>
+          `;
+          btn.addEventListener("click", () => {
+            tempDiaryForm.mood = tempDiaryForm.mood === m.id ? "" : m.id;
+            renderDiaryScreen();
+          });
+          moodGrid.appendChild(btn);
+        });
+
+        // Renderiza grade de Sintomas
+        const sympGrid = document.getElementById("symptomsGrid");
+        sympGrid.innerHTML = "";
+        SYMPTOMS_LIST.forEach(s => {
+          const active = tempDiaryForm.symptoms.includes(s.id);
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = `select-chip ${active ? "active" : ""}`;
+          chip.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="9"/>
+              ${active ? '<polyline points="9 12 11 14 15 10"/>' : ""}
+            </svg>
+            <span>${s.label}</span>
+          `;
+          chip.addEventListener("click", () => {
+            const idx = tempDiaryForm.symptoms.indexOf(s.id);
+            if (idx >= 0) tempDiaryForm.symptoms.splice(idx, 1);
+            else tempDiaryForm.symptoms.push(s.id);
+            renderDiaryScreen();
+          });
+          sympGrid.appendChild(chip);
+        });
+
+        document.getElementById("selectedSymptomsCount").textContent = `${tempDiaryForm.symptoms.length} selecionado(s)`;
+        const intensityBar = document.getElementById("intensityContainer");
+        intensityBar.style.display = tempDiaryForm.symptoms.length > 0 ? "flex" : "none";
+        intensityBar.querySelectorAll(".intensity-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.intensity === tempDiaryForm.intensity);
+        });
+
+        // Sono e Bem-estar
+        document.getElementById("sleepStartInput").value = tempDiaryForm.sleepStart || "23:00";
+        document.getElementById("sleepEndInput").value = tempDiaryForm.sleepEnd || "07:00";
+        document.getElementById("sleepDurationBadge").textContent = calculateSleepHours(tempDiaryForm.sleepStart, tempDiaryForm.sleepEnd);
+
+        document.querySelectorAll("#sleepQualityGrid .star-btn").forEach(btn => {
+          btn.classList.toggle("active", Number(btn.dataset.quality) === Number(tempDiaryForm.sleepQuality));
+        });
+
+        document.querySelectorAll("#energyLevelGrid .star-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.energy === tempDiaryForm.energy);
+        });
+
+        const waterCount = Number(tempDiaryForm.water) || 0;
+        document.getElementById("waterCountDisplay").textContent = waterCount;
+        document.getElementById("waterMlDisplay").textContent = waterCount * 250;
+
+        // Atividades
+        const actGrid = document.getElementById("activitiesGrid");
+        actGrid.innerHTML = "";
+        ACTIVITIES_LIST.forEach(act => {
+          const active = (tempDiaryForm.activities || []).includes(act);
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = `select-chip ${active ? "active" : ""}`;
+          chip.innerHTML = `<span>${active ? "✓ " : ""}${act}</span>`;
+          chip.addEventListener("click", () => {
+            if (!tempDiaryForm.activities) tempDiaryForm.activities = [];
+            const idx = tempDiaryForm.activities.indexOf(act);
+            if (idx >= 0) tempDiaryForm.activities.splice(idx, 1);
+            else tempDiaryForm.activities.push(act);
+            renderDiaryScreen();
+          });
+          actGrid.appendChild(chip);
+        });
+
+        document.getElementById("diaryNotesInput").value = tempDiaryForm.notes || "";
+
+        renderDiaryHistoryList();
+      }
+
+      function renderDiaryHistoryList() {
+        const listEl = document.getElementById("diaryHistoryList");
+        const dates = Object.keys(appState.diaryEntries).sort().reverse();
+
+        if (dates.length === 0) {
+          listEl.innerHTML = `<p style="font-size:0.82rem;color:var(--text-muted);text-align:center;padding:12px 0;">Nenhum registro salvo ainda. Preencha acima e toque em Salvar.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = "";
+        dates.slice(0, 10).forEach(iso => {
+          const entry = appState.diaryEntries[iso];
+          const symps = (entry.symptoms || []).map(id => {
+            const found = SYMPTOMS_LIST.find(s => s.id === id);
+            return found ? found.label : id;
+          });
+
+          const row = document.createElement("div");
+          row.className = "log-history-item";
+          row.innerHTML = `
+            <div style="flex:1;min-width:0;cursor:pointer;" class="log-load-trigger">
+              <div style="font-size:0.84rem;font-weight:700;color:var(--text-main);">${formatShortDateBR(iso)} ${entry.mood ? "• " + entry.mood : ""}</div>
+              <div style="font-size:0.76rem;color:var(--text-secondary);margin-top:2px;">
+                ${symps.length ? symps.join(", ") : "Sem sintomas físicos"} • Sono: ${calculateSleepHours(entry.sleepStart, entry.sleepEnd)}
+              </div>
+              ${entry.notes ? `<div style="font-size:0.74rem;color:var(--text-muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${escapeHTML(entry.notes)}"</div>` : ""}
+            </div>
+            <button type="button" class="icon-btn log-delete-trigger" title="Excluir registro" style="width:32px;height:32px;color:var(--danger);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              </svg>
+            </button>
+          `;
+
+          row.querySelector(".log-load-trigger").addEventListener("click", () => {
+            selectedDiaryDate = iso;
+            loadDiaryFormForDate(iso);
+            renderDiaryScreen();
+            document.getElementById("appMain").scrollTo({ top: 0, behavior: "smooth" });
+            showToast(`Registro de ${formatShortDateBR(iso)} carregado.`);
+          });
+
+          row.querySelector(".log-delete-trigger").addEventListener("click", () => {
+            delete appState.diaryEntries[iso];
+            saveState();
+            renderDiaryHistoryList();
+            renderCalendar();
+            renderHome();
+            showToast("Registro excluído.");
+          });
+
+          listEl.appendChild(row);
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         9. BIBLIOTECA EDUCATIVA (APRENDA SOBRE SEU CORPO)
+         ---------------------------------------------------------------------- */
+      function renderLearnScreen(filterText = "") {
+        const listEl = document.getElementById("articlesList");
+        const query = filterText.trim().toLowerCase();
+
+        const filtered = EDUCATIONAL_ARTICLES.filter(art =>
+          art.title.toLowerCase().includes(query) ||
+          art.category.toLowerCase().includes(query) ||
+          art.excerpt.toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:0.84rem;">Nenhum artigo encontrado para "${escapeHTML(filterText)}".</div>`;
+          return;
+        }
+
+        listEl.innerHTML = "";
+        filtered.forEach(art => {
+          const card = document.createElement("article");
+          card.className = "article-card";
+          card.innerHTML = `
+            <div class="article-badge" style="background:${art.color};color:${art.accent};">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+            </div>
+            <div class="article-meta">
+              <div class="article-cat">${art.category}</div>
+              <h3 class="article-title">${art.title}</h3>
+              <p class="article-excerpt">${art.excerpt}</p>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          `;
+          card.addEventListener("click", () => {
+            document.getElementById("modalArticleCategory").textContent = art.category;
+            document.getElementById("modalArticleTitle").textContent = art.title;
+            document.getElementById("modalArticleBody").innerHTML = art.content;
+            openModal("modalArticle");
+          });
+          listEl.appendChild(card);
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         10. HISTÓRICO E RELATÓRIOS (GRÁFICOS SVG RESPONSIVOS)
+         ---------------------------------------------------------------------- */
+      function openReportsModal() {
+        const analytics = getCycleAnalytics();
+        const entries = Object.values(appState.diaryEntries);
+
+        const symptomCounts = {};
+        const moodCounts = {};
+        let totalWater = 0;
+        let sleepCount = 0;
+        let totalSleepMins = 0;
+
+        entries.forEach(e => {
+          (e.symptoms || []).forEach(s => {
+            symptomCounts[s] = (symptomCounts[s] || 0) + 1;
+          });
+          if (e.mood) {
+            moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1;
+          }
+          totalWater += Number(e.water) || 0;
+          if (e.sleepStart && e.sleepEnd) {
+            const [sh, sm] = e.sleepStart.split(":").map(Number);
+            const [eh, em] = e.sleepEnd.split(":").map(Number);
+            let sM = sh * 60 + sm;
+            let eM = eh * 60 + em;
+            if (eM <= sM) eM += 1440;
+            totalSleepMins += (eM - sM);
+            sleepCount++;
+          }
+        });
+
+        let cycleChartSVG = `<p style="font-size:0.8rem;color:var(--text-muted);">Registre pelo menos 2 menstruações para visualizar o gráfico de duração dos ciclos.</p>`;
+        if (analytics.cycleLengths.length > 0) {
+          const recentCycles = analytics.cycleLengths.slice(-6);
+          const maxVal = Math.max(...recentCycles, 35);
+          const barW = 36;
+          const gap = 16;
+          const svgW = recentCycles.length * (barW + gap) + 20;
+
+          const bars = recentCycles.map((len, idx) => {
+            const h = Math.round((len / maxVal) * 85);
+            const x = 14 + idx * (barW + gap);
+            const y = 105 - h;
+            return `
+              <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="8" fill="#E88D9B"/>
+              <text x="${x + barW / 2}" y="${y - 5}" text-anchor="middle" font-size="11" font-weight="700" fill="#2E262B">${len}d</text>
+              <text x="${x + barW / 2}" y="122" text-anchor="middle" font-size="10" fill="#6E6268">C${idx + 1}</text>
+            `;
+          }).join("");
+
+          cycleChartSVG = `
+            <svg width="100%" height="130" viewBox="0 0 ${svgW} 130" preserveAspectRatio="xMidYMid meet">
+              ${bars}
+            </svg>
+          `;
+        }
+
+        const sortedSymptoms = Object.entries(symptomCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        let symptomsRankingHTML = `<p style="font-size:0.8rem;color:var(--text-muted);">Nenhum sintoma registrado no diário ainda.</p>`;
+        if (sortedSymptoms.length > 0) {
+          const maxS = sortedSymptoms[0][1];
+          symptomsRankingHTML = sortedSymptoms.map(([id, count]) => {
+            const found = SYMPTOMS_LIST.find(s => s.id === id);
+            const label = found ? found.label : id;
+            const pct = Math.round((count / maxS) * 100);
+            return `
+              <div class="progress-row">
+                <div class="progress-meta">
+                  <span>${label}</span>
+                  <span>${count}x</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+              </div>
+            `;
+          }).join("");
+        }
+
+        const sortedMoods = Object.entries(moodCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+        const moodsHTML = sortedMoods.length > 0
+          ? sortedMoods.map(([m, c]) => `<span class="pill-badge" style="margin:3px;">${m} (${c})</span>`).join("")
+          : `<span style="font-size:0.8rem;color:var(--text-muted);">Sem registros de humor ainda.</span>`;
+
+        const avgSleepStr = sleepCount > 0
+          ? `${(totalSleepMins / sleepCount / 60).toFixed(1)}h / noite`
+          : "--";
+        const avgWaterStr = entries.length > 0
+          ? `${(totalWater / entries.length).toFixed(1)} copos / dia`
+          : "--";
+
+        document.getElementById("modalReportsBody").innerHTML = `
+          <div class="summary-grid">
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Ciclo médio</div>
+              <div class="mini-stat-value">${analytics.avgCycleLength} dias</div>
+              <div class="mini-stat-sub">${analytics.periods.length} período(s)</div>
+            </div>
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Menstruação média</div>
+              <div class="mini-stat-value">${analytics.avgPeriodLength} dias</div>
+              <div class="mini-stat-sub">${analytics.isIrregular ? "Variação detectada" : "Padrão estável"}</div>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <strong style="font-size:0.86rem;display:block;margin-bottom:8px;">Duração dos Ciclos (dias)</strong>
+            ${cycleChartSVG}
+          </div>
+
+          <div class="chart-box">
+            <strong style="font-size:0.86rem;display:block;margin-bottom:8px;">Sintomas mais frequentes</strong>
+            ${symptomsRankingHTML}
+          </div>
+
+          <div class="chart-box">
+            <strong style="font-size:0.86rem;display:block;margin-bottom:6px;">Registros de Humor</strong>
+            <div>${moodHTML}</div>
+          </div>
+
+          <div class="summary-grid" style="margin-bottom:0;">
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Média de Sono</div>
+              <div class="mini-stat-value">${avgSleepStr}</div>
+            </div>
+            <div class="mini-stat-card">
+              <div class="mini-stat-label">Hidratação Média</div>
+              <div class="mini-stat-value">${avgWaterStr}</div>
+            </div>
+          </div>
+        `;
+
+        openModal("modalReports");
+      }
+
+      /* ----------------------------------------------------------------------
+         11. PERFIL, TEMAS, EXPORTAÇÃO E EXCLUSÃO DE DADOS
+         ---------------------------------------------------------------------- */
+      function applyTheme(themeName) {
+        if (themeName === "rose") {
+          document.documentElement.removeAttribute("data-theme");
+        } else {
+          document.documentElement.setAttribute("data-theme", themeName);
+        }
+      }
+
+      function renderProfileScreen() {
+        const p = appState.profile;
+        document.getElementById("profileAvatarInitial").textContent = (p.name || "L").charAt(0).toUpperCase();
+        document.getElementById("profileDisplayName").textContent = p.name || "Usuária LUNA";
+        document.getElementById("profilePlanTag").textContent = p.isPremiumPreview
+          ? "Prévia LUNA Premium Ativa • Armazenamento Local"
+          : "Plano Gratuito • Armazenamento Local";
+
+        document.getElementById("settingUserName").value = p.name || "";
+        document.getElementById("settingCycleLength").value = p.cycleLength || 28;
+        document.getElementById("settingPeriodLength").value = p.periodLength || 5;
+        document.getElementById("toggleReminders").checked = Boolean(p.reminders);
+
+        document.querySelectorAll(".theme-option").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.themeChoice === (p.theme || "rose"));
+        });
+      }
+
+      function exportUserDataJSON() {
+        try {
+          const dataStr = JSON.stringify(appState, null, 2);
+          const blob = new Blob([dataStr], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `luna-backup-${getTodayISO()}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast("Backup JSON exportado com sucesso!");
+        } catch (err) {
+          showToast("Erro ao exportar backup.");
+        }
+      }
+
+      function escapeHTML(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      /* ----------------------------------------------------------------------
+         12. INICIALIZAÇÃO E LISTENERS DE EVENTOS
+         ---------------------------------------------------------------------- */
+      function initApp() {
+        applyTheme(appState.profile.theme || "rose");
+        loadDiaryFormForDate(selectedDiaryDate);
+        renderHome();
+
+        // Navegação inferior
+        document.querySelectorAll(".nav-item").forEach(btn => {
+          btn.addEventListener("click", () => switchTab(btn.dataset.target));
+        });
+
+        // Botões rápidos da Tela Inicial
+        document.getElementById("btnQuickPeriod").addEventListener("click", () => {
+          currentCalDate = new Date();
+          switchTab("calendar");
+          openDayDetailModal(getTodayISO());
+        });
+
+        document.getElementById("btnQuickSymptoms").addEventListener("click", () => {
+          selectedDiaryDate = getTodayISO();
+          loadDiaryFormForDate(selectedDiaryDate);
+          switchTab("diary");
+        });
+
+        document.getElementById("cardHomeMood").addEventListener("click", () => {
+          selectedDiaryDate = getTodayISO();
+          loadDiaryFormForDate(selectedDiaryDate);
+          switchTab("diary");
+        });
+
+        document.getElementById("cardHomeSleep").addEventListener("click", () => {
+          selectedDiaryDate = getTodayISO();
+          loadDiaryFormForDate(selectedDiaryDate);
+          switchTab("diary");
+        });
+
+        // Relatórios e Premium
+        document.getElementById("btnOpenReportsHeader").addEventListener("click", openReportsModal);
+        document.getElementById("btnHomeOpenReports").addEventListener("click", openReportsModal);
+        document.getElementById("btnProfileReports").addEventListener("click", openReportsModal);
+
+        document.getElementById("btnHomeOpenPremium").addEventListener("click", () => openModal("modalPremium"));
+        document.getElementById("btnProfilePremium").addEventListener("click", () => openModal("modalPremium"));
+
+        document.getElementById("btnTogglePremiumPreview").addEventListener("click", () => {
+          appState.profile.isPremiumPreview = !appState.profile.isPremiumPreview;
+          saveState();
+          renderProfileScreen();
+          closeModal("modalPremium");
+          showToast(appState.profile.isPremiumPreview ? "Prévia LUNA Premium ativada!" : "Prévia Premium desativada.");
+        });
+
+        // Controles do Calendário
+        document.getElementById("btnCalPrev").addEventListener("click", () => {
+          currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+          renderCalendar();
+        });
+
+        document.getElementById("btnCalNext").addEventListener("click", () => {
+          currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+          renderCalendar();
+        });
+
+        document.getElementById("btnCalToday").addEventListener("click", () => {
+          currentCalDate = new Date();
+          renderCalendar();
+        });
+
+        // Eventos do Diário
+        document.getElementById("diaryDateInput").addEventListener("change", (e) => {
+          if (e.target.value) {
+            selectedDiaryDate = e.target.value;
+            loadDiaryFormForDate(selectedDiaryDate);
+            renderDiaryScreen();
+          }
+        });
+
+        document.querySelectorAll("#intensityContainer .intensity-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            tempDiaryForm.intensity = btn.dataset.intensity;
+            renderDiaryScreen();
+          });
+        });
+
+        document.getElementById("sleepStartInput").addEventListener("change", (e) => {
+          tempDiaryForm.sleepStart = e.target.value;
+          document.getElementById("sleepDurationBadge").textContent = calculateSleepHours(tempDiaryForm.sleepStart, tempDiaryForm.sleepEnd);
+        });
+
+        document.getElementById("sleepEndInput").addEventListener("change", (e) => {
+          tempDiaryForm.sleepEnd = e.target.value;
+          document.getElementById("sleepDurationBadge").textContent = calculateSleepHours(tempDiaryForm.sleepStart, tempDiaryForm.sleepEnd);
+        });
+
+        document.querySelectorAll("#sleepQualityGrid .star-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            tempDiaryForm.sleepQuality = Number(btn.dataset.quality);
+            renderDiaryScreen();
+          });
+        });
+
+        document.querySelectorAll("#energyLevelGrid .star-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            tempDiaryForm.energy = btn.dataset.energy;
+            renderDiaryScreen();
+          });
+        });
+
+        document.getElementById("btnWaterMinus").addEventListener("click", () => {
+          tempDiaryForm.water = Math.max(0, (Number(tempDiaryForm.water) || 0) - 1);
+          renderDiaryScreen();
+        });
+
+        document.getElementById("btnWaterPlus").addEventListener("click", () => {
+          tempDiaryForm.water = Math.min(20, (Number(tempDiaryForm.water) || 0) + 1);
+          renderDiaryScreen();
+        });
+
+        document.getElementById("diaryNotesInput").addEventListener("input", (e) => {
+          tempDiaryForm.notes = e.target.value;
+        });
+
+        document.getElementById("btnSaveDiary").addEventListener("click", () => {
+          tempDiaryForm.notes = document.getElementById("diaryNotesInput").value.trim();
+          appState.diaryEntries[selectedDiaryDate] = JSON.parse(JSON.stringify(tempDiaryForm));
+          saveState();
+          renderDiaryHistoryList();
+          renderCalendar();
+          renderHome();
+          showToast(`Registro de ${formatShortDateBR(selectedDiaryDate)} salvo!`);
+        });
+
+        // Busca na Biblioteca Educativa
+        document.getElementById("learnSearchInput").addEventListener("input", (e) => {
+          renderLearnScreen(e.target.value);
+        });
+
+        // Configurações do Perfil
+        document.getElementById("btnSaveSettings").addEventListener("click", () => {
+          const nameVal = document.getElementById("settingUserName").value.trim() || "Usuária";
+          const cycleVal = Math.min(45, Math.max(20, Number(document.getElementById("settingCycleLength").value) || 28));
+          const periodVal = Math.min(10, Math.max(2, Number(document.getElementById("settingPeriodLength").value) || 5));
+
+          appState.profile.name = nameVal;
+          appState.profile.cycleLength = cycleVal;
+          appState.profile.periodLength = periodVal;
+          saveState();
+          renderProfileScreen();
+          renderHome();
+          renderCalendar();
+          showToast("Configurações salvas com sucesso!");
+        });
+
+        document.querySelectorAll(".theme-option").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const choice = btn.dataset.themeChoice;
+            appState.profile.theme = choice;
+            applyTheme(choice);
+            saveState();
+            renderProfileScreen();
+            showToast("Tema visual atualizado!");
+          });
+        });
+
+        document.getElementById("toggleReminders").addEventListener("change", (e) => {
+          appState.profile.reminders = e.target.checked;
+          saveState();
+          showToast(e.target.checked ? "Lembretes visuais ativados." : "Lembretes visuais desativados.");
+        });
+
+        document.getElementById("btnExportData").addEventListener("click", exportUserDataJSON);
+
+        document.getElementById("btnDeleteAllData").addEventListener("click", () => {
+          openModal("modalConfirmDelete");
+        });
+
+        document.getElementById("btnConfirmEraseAction").addEventListener("click", () => {
+          localStorage.removeItem(STORAGE_KEY);
+          appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+          saveState();
+          applyTheme("rose");
+          loadDiaryFormForDate(getTodayISO());
+          closeModal("modalConfirmDelete");
+          switchTab("home");
+          showToast("Todos os dados foram apagados.");
+        });
+
+        // Fechamento universal de Modais (botão X, clique fora e tecla ESC)
+        document.querySelectorAll("[data-close-modal]").forEach(btn => {
+          btn.addEventListener("click", () => closeModal(btn.dataset.closeModal));
+        });
+
+        document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+          backdrop.addEventListener("click", (e) => {
+            if (e.target === backdrop) backdrop.classList.remove("open");
+          });
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            document.querySelectorAll(".modal-backdrop.open").forEach(m => m.classList.remove("open"));
+          }
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", initApp);
+    })();
+  </script>
+</body>
+</html>
+```
